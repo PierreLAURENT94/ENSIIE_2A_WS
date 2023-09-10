@@ -6,6 +6,8 @@ use App\Repository\TrainRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Exception\SeatsAvailableException;
+
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
@@ -77,7 +79,7 @@ class Train
 
     #[ORM\Column]
     #[Groups('read')]
-    private ?int $priceStandard = null;
+    private ?float $priceStandard = null;
 
     public function getId(): ?int
     {
@@ -139,6 +141,16 @@ class Train
 
     public function setSeatsAvailableBusiness(int $seatsAvailableBusiness): static
     {
+        if($this->getId() && $seatsAvailableBusiness > $this->seatsAvailableBusiness){
+            throw new SeatsAvailableException("seatsAvailableBusiness: This value must be less than or equal to its previous value.");
+            return $this;
+        }
+
+        if($seatsAvailableBusiness < 0){
+            throw new SeatsAvailableException("seatsAvailableBusiness: This value must be greater than 0.");
+            return $this;
+        }
+
         $this->seatsAvailableBusiness = $seatsAvailableBusiness;
 
         return $this;
@@ -163,6 +175,16 @@ class Train
 
     public function setSeatsAvailableFirst(int $seatsAvailableFirst): static
     {
+        if($this->getId() && $seatsAvailableFirst > $this->seatsAvailableFirst){
+            throw new SeatsAvailableException("seatsAvailableFirst: This value must be less than or equal to its previous value.");
+            return $this;
+        }
+
+        if($seatsAvailableFirst < 0){
+            throw new SeatsAvailableException("seatsAvailableFirst: This value must be greater than 0.");
+            return $this;
+        }
+
         $this->seatsAvailableFirst = $seatsAvailableFirst;
 
         return $this;
@@ -187,17 +209,27 @@ class Train
 
     public function setSeatsAvailableStandard(int $seatsAvailableStandard): static
     {
+        if($this->getId() && $seatsAvailableStandard > $this->seatsAvailableStandard){
+            throw new SeatsAvailableException("seatsAvailableStandard: This value must be less than or equal to its previous value.");
+            return $this;
+        }
+
+        if($seatsAvailableStandard < 0){
+            throw new SeatsAvailableException("seatsAvailableStandard: This value must be greater than 0.");
+            return $this;
+        }
+
         $this->seatsAvailableStandard = $seatsAvailableStandard;
 
         return $this;
     }
 
-    public function getPriceStandard(): ?int
+    public function getPriceStandard(): ?float
     {
         return $this->priceStandard;
     }
 
-    public function setPriceStandard(int $priceStandard): static
+    public function setPriceStandard(float $priceStandard): static
     {
         $this->priceStandard = $priceStandard;
 

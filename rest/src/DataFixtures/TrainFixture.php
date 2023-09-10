@@ -26,7 +26,7 @@ class TrainFixture extends Fixture
                             $departureTrain1->setTime(rand(8, 11), rand(0, 59));
                             $arrivalTrain1 = clone $departureTrain1;
                             $arrivalTrain1->add($duration);
-                            $priceFirstTrain1 = rand(50, 150);
+                            $priceFirstTrain1 = rand(5000, 15000);
                             $train1 = new Train;
                             $train1
                                 ->setDepartureStation($departureStation)
@@ -34,18 +34,18 @@ class TrainFixture extends Fixture
                                 ->setArrivalStation($arrivalStation)
                                 ->setArrivalDateTime($arrivalTrain1)
                                 ->setSeatsAvailableBusiness(rand(0, 25))
-                                ->setPriceBusiness(rand(300, 900))
+                                ->setPriceBusiness(rand(30000, 90000) / 100)
                                 ->setSeatsAvailableFirst(rand(0, 150))
-                                ->setPriceFirst($priceFirstTrain1)
+                                ->setPriceFirst($priceFirstTrain1 / 100)
                                 ->setSeatsAvailableStandard(rand(0, 325))
-                                ->setPriceStandard(rand(35, min(105, $priceFirstTrain1)));
+                                ->setPriceStandard(rand(3500, min(10500, $priceFirstTrain1)) / 100);
                             $manager->persist($train1);
 
                             $departureTrain2 = new DateTime();
                             $departureTrain2->setTime(rand(12, 15), rand(0, 59));
                             $arrivalTrain2 = clone $departureTrain2;
                             $arrivalTrain2->add($duration);
-                            $priceFirstTrain2 = rand(50, 150);
+                            $priceFirstTrain2 = rand(5000, 15000);
                             $train2 = new Train;
                             $train2
                                 ->setDepartureStation($departureStation)
@@ -53,18 +53,18 @@ class TrainFixture extends Fixture
                                 ->setArrivalStation($arrivalStation)
                                 ->setArrivalDateTime($arrivalTrain2)
                                 ->setSeatsAvailableBusiness(rand(0, 25))
-                                ->setPriceBusiness(rand(300, 900))
+                                ->setPriceBusiness(rand(30000, 90000) / 100)
                                 ->setSeatsAvailableFirst(rand(0, 150))
-                                ->setPriceFirst($priceFirstTrain2)
+                                ->setPriceFirst($priceFirstTrain2 / 100)
                                 ->setSeatsAvailableStandard(rand(0, 325))
-                                ->setPriceStandard(rand(35, min(105, $priceFirstTrain2)));
+                                ->setPriceStandard(rand(3500, min(10500, $priceFirstTrain2)) / 100);
                             $manager->persist($train2);
 
                             $departureTrain3 = new DateTime();
                             $departureTrain3->setTime(rand(15, 18), rand(0, 59));
                             $arrivalTrain3 = clone $departureTrain3;
                             $arrivalTrain3->add($duration);
-                            $priceFirstTrain3 = rand(50, 150);
+                            $priceFirstTrain3 = rand(5000, 15000);
                             $train3 = new Train;
                             $train3
                                 ->setDepartureStation($departureStation)
@@ -72,11 +72,11 @@ class TrainFixture extends Fixture
                                 ->setArrivalStation($arrivalStation)
                                 ->setArrivalDateTime($arrivalTrain3)
                                 ->setSeatsAvailableBusiness(rand(0, 25))
-                                ->setPriceBusiness(rand(300, 900))
+                                ->setPriceBusiness(rand(30000, 90000) / 100)
                                 ->setSeatsAvailableFirst(rand(0, 150))
-                                ->setPriceFirst($priceFirstTrain3)
+                                ->setPriceFirst($priceFirstTrain3 / 100)
                                 ->setSeatsAvailableStandard(rand(0, 325))
-                                ->setPriceStandard(rand(35, min(105, $priceFirstTrain3)));
+                                ->setPriceStandard(rand(3500, min(10500, $priceFirstTrain3)) / 100);
                             $manager->persist($train3);
                             break;
                     }

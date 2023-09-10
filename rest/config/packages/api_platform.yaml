@@ -7,3 +7,6 @@ api_platform:
     version: '1.0'
     # Disable ReDoc.
     enable_re_doc: false
+
+    exception_to_status:
+        App\Exception\SeatsAvailableException: 422
