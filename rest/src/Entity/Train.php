@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Exception\SeatsAvailableException;
 
-
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Get;
@@ -18,6 +17,7 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\OpenApi\Model;
 
 #[ORM\Entity(repositoryClass: TrainRepository::class)]
 #[ApiResource(
@@ -33,6 +33,29 @@ use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 #[ApiFilter(DateFilter::class, properties: ['departureDateTime' => 'before', 'arrivalDateTime'])]
 #[ApiFilter(RangeFilter::class, properties: ['seatsAvailableBusiness', 'seatsAvailableFirst', 'seatsAvailableStandard'])]
 #[ApiFilter(OrderFilter::class, properties: ['priceBusiness', 'priceFirst', 'priceStandard'])]
+#[Patch(
+    openapi: new Model\Operation(
+        summary: 'Updates available seats in the Train resource.', 
+        description: 'Updates available seats in the Train resource.',
+        requestBody: new Model\RequestBody(
+            content: new \ArrayObject([
+                'application/merge-patch+json' => [
+                    'schema' => [
+                        'type' => 'object', 
+                        'properties' => [
+                            'seatsAvailableBusiness' => ['type' => 'integer'], 
+                            'seatsAvailableFirst' => ['type' => 'integer'],
+                            'seatsAvailableStandard' => ['type' => 'integer']
+                        ]
+                    ], 
+                    'example' => [
+                        'seatsAvailableStandard' => 82
+                    ]
+                ]
+            ])
+        )
+    )
+)]
 class Train
 {
     #[ORM\Id]
@@ -142,12 +165,12 @@ class Train
     public function setSeatsAvailableBusiness(int $seatsAvailableBusiness): static
     {
         if($this->getId() && $seatsAvailableBusiness > $this->seatsAvailableBusiness){
-            throw new SeatsAvailableException("seatsAvailableBusiness: This value must be less than or equal to its previous value.");
+            throw new SeatsAvailableException("seatsAvailableBusiness: This value must be less than or equal to " . $this->seatsAvailableBusiness . ".");
             return $this;
         }
 
         if($seatsAvailableBusiness < 0){
-            throw new SeatsAvailableException("seatsAvailableBusiness: This value must be greater than 0.");
+            throw new SeatsAvailableException("seatsAvailableBusiness: This value must be greater than or equal to 0.");
             return $this;
         }
 
@@ -176,12 +199,12 @@ class Train
     public function setSeatsAvailableFirst(int $seatsAvailableFirst): static
     {
         if($this->getId() && $seatsAvailableFirst > $this->seatsAvailableFirst){
-            throw new SeatsAvailableException("seatsAvailableFirst: This value must be less than or equal to its previous value.");
+            throw new SeatsAvailableException("seatsAvailableFirst: This value must be less than or equal to " . $this->seatsAvailableFirst . ".");
             return $this;
         }
 
         if($seatsAvailableFirst < 0){
-            throw new SeatsAvailableException("seatsAvailableFirst: This value must be greater than 0.");
+            throw new SeatsAvailableException("seatsAvailableFirst: This value must be greater than or equal to 0.");
             return $this;
         }
 
@@ -210,12 +233,12 @@ class Train
     public function setSeatsAvailableStandard(int $seatsAvailableStandard): static
     {
         if($this->getId() && $seatsAvailableStandard > $this->seatsAvailableStandard){
-            throw new SeatsAvailableException("seatsAvailableStandard: This value must be less than or equal to its previous value.");
+            throw new SeatsAvailableException("seatsAvailableStandard: This value must be less than or equal to " . $this->seatsAvailableStandard . ".");
             return $this;
         }
 
         if($seatsAvailableStandard < 0){
-            throw new SeatsAvailableException("seatsAvailableStandard: This value must be greater than 0.");
+            throw new SeatsAvailableException("seatsAvailableStandard: This value must be greater than or equal to 0.");
             return $this;
         }
 
