@@ -1,0 +1,9 @@
+api_platform:
+    # The title of the API.
+    title: 'API %env(COMPANY)%'
+    # The description of the API.
+    description: 'Train Filtering REST WS'
+    # The version of the API.
+    version: '1.0'
+    # Disable ReDoc.
+    enable_re_doc: false
