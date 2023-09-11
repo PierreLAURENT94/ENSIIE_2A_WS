@@ -13,7 +13,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\ApiFilter;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+// use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;   @TODO custom filter pour Objet Station 
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
@@ -30,7 +30,7 @@ use ApiPlatform\OpenApi\Model;
     normalizationContext: ['groups' => ['read']],
     denormalizationContext: ['groups' => ['write']]
 )]
-//#[ApiFilter(SearchFilter::class, properties: ['departureStation.city' => 'partial', 'arrivalStation.city' => 'partial'])]
+// #[ApiFilter(SearchFilter::class, properties: ['departureStation.city' => 'partial', 'arrivalStation.city' => 'partial'])]   @TODO custom filter pour Objet Station 
 #[ApiFilter(NumericFilter::class, properties: ['departureStation.id', 'arrivalStation.id'])]
 #[ApiFilter(DateFilter::class, properties: ['departureDateTime', 'arrivalDateTime'])]
 #[ApiFilter(RangeFilter::class, properties: ['seatsAvailableBusiness', 'seatsAvailableFirst', 'seatsAvailableStandard'])]
