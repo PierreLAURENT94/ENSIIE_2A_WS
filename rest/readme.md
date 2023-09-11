@@ -2,6 +2,9 @@
 * the COMPANY
 * the DATABASE_URL
 
+## In \public\bundles\apiplatform\
+* Drop the good *logo-header.svg*
+
 ## Run in the terminal
 ```
 php bin/console d:d:d --force
