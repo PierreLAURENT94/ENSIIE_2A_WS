@@ -6,6 +6,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
 use App\Entity\Train;
+use App\Entity\Station;
 use DateInterval;
 use DateTime;
 
@@ -13,11 +14,11 @@ class TrainFixture extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $stations = ["Paris", "Marseille", "Lyon", "Toulouse", "Nice", "Nantes", "Montpellier", "Strasbourg", "Bordeaux", "Lille"];
+        $stations = $manager->getRepository(Station::class)->findAll();
 
         foreach ($stations as $departureStation) {
             foreach ($stations as $arrivalStation) {
-                if ($departureStation != $arrivalStation) {
+                if ($departureStation->getCity() != $arrivalStation->getCity()) {
                     switch ($_ENV['COMPANY']) {
                         case 'TGV INOUI':
                             $duration = DateInterval::createFromDateString(rand(30, 360) . " minutes");

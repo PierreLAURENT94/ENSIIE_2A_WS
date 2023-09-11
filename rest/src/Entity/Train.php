@@ -17,6 +17,7 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\NumericFilter;
 use ApiPlatform\OpenApi\Model;
 
 #[ORM\Entity(repositoryClass: TrainRepository::class)]
@@ -29,8 +30,9 @@ use ApiPlatform\OpenApi\Model;
     normalizationContext: ['groups' => ['read']],
     denormalizationContext: ['groups' => ['write']]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['departureStation' => 'partial', 'arrivalStation' => 'partial'])]
-#[ApiFilter(DateFilter::class, properties: ['departureDateTime' => 'before', 'arrivalDateTime'])]
+//#[ApiFilter(SearchFilter::class, properties: ['departureStation.city' => 'partial', 'arrivalStation.city' => 'partial'])]
+#[ApiFilter(NumericFilter::class, properties: ['departureStation.id', 'arrivalStation.id'])]
+#[ApiFilter(DateFilter::class, properties: ['departureDateTime', 'arrivalDateTime'])]
 #[ApiFilter(RangeFilter::class, properties: ['seatsAvailableBusiness', 'seatsAvailableFirst', 'seatsAvailableStandard'])]
 #[ApiFilter(OrderFilter::class, properties: ['priceBusiness', 'priceFirst', 'priceStandard'])]
 #[Patch(
@@ -64,17 +66,19 @@ class Train
     #[Groups('read')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
     #[Groups('read')]
-    private ?string $departureStation = null;
+    private ?Station $departureStation = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups('read')]
     private ?\DateTimeInterface $departureDateTime = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
     #[Groups('read')]
-    private ?string $arrivalStation = null;
+    private ?Station $arrivalStation = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups('read')]
@@ -109,12 +113,12 @@ class Train
         return $this->id;
     }
 
-    public function getDepartureStation(): ?string
+    public function getDepartureStation(): ?Station
     {
         return $this->departureStation;
     }
 
-    public function setDepartureStation(string $departureStation): static
+    public function setDepartureStation(?Station $departureStation): static
     {
         $this->departureStation = $departureStation;
 
@@ -133,12 +137,12 @@ class Train
         return $this;
     }
 
-    public function getArrivalStation(): ?string
+    public function getArrivalStation(): ?Station
     {
         return $this->arrivalStation;
     }
 
-    public function setArrivalStation(string $arrivalStation): static
+    public function setArrivalStation(?Station $arrivalStation): static
     {
         $this->arrivalStation = $arrivalStation;
 
