@@ -12,6 +12,7 @@ import java.io.IOException;
 public class Soap {
 
     public static void main(String[] args) {
+        // tests
         try {
             JsonArray stations = fetchStations(1, "", "");
             for (JsonElement stationElement : stations) {
@@ -24,8 +25,17 @@ public class Soap {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    
+        try {
+            JsonObject station = fetchStationById(2);
+            System.out.println("ID: " + station.get("id"));
+            System.out.println("Name: " + station.get("name"));
+            System.out.println("City: " + station.get("city"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
+    // To get all stations from a name or a city
     public static JsonArray fetchStations(int page, String name, String city) throws IOException {
         OkHttpClient client = new OkHttpClient();
 
@@ -45,5 +55,33 @@ public class Soap {
             JsonObject jsonObject = JsonParser.parseString(jsonData).getAsJsonObject();
             return jsonObject.getAsJsonArray("hydra:member");
         }
+    }
+
+    // To get all informations about a station from a id
+    public static JsonObject fetchStationById(int id) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+
+        String url = "http://127.0.0.1:8000/stations/" + id;
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            String jsonData = response.body().string();
+            JsonObject jsonObject = JsonParser.parseString(jsonData).getAsJsonObject();
+
+            int stationId = jsonObject.get("id").getAsInt();
+            String name = jsonObject.get("name").getAsString();
+            String city = jsonObject.get("city").getAsString();
+
+            JsonObject result = new JsonObject();
+            result.addProperty("id", stationId);
+            result.addProperty("name", name);
+            result.addProperty("city", city);
+
+            return result;
+        }
+
     }
 }
