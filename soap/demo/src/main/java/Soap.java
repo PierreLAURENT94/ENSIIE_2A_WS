@@ -8,6 +8,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Soap {
 
@@ -34,7 +36,52 @@ public class Soap {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Map<String, String> params = new HashMap<>();
+        params.put("page", "1");
+        // Ajoutez tous les autres paramètres de la même manière...
+        // params.put("nom_du_parametre", "valeur");
+        try {
+            JsonArray trains = fetchTrains(params);
+            for (JsonElement trainElement : trains) {
+                JsonObject trainObject = trainElement.getAsJsonObject();
+                
+                int id = trainObject.get("id").getAsInt();
+                
+                JsonObject departureStation = trainObject.get("departureStation").getAsJsonObject();
+                String departureName = departureStation.get("name").getAsString();
+                String departureCity = departureStation.get("city").getAsString();
+                
+                String departureDateTime = trainObject.get("departureDateTime").getAsString();
+                
+                JsonObject arrivalStation = trainObject.get("arrivalStation").getAsJsonObject();
+                String arrivalName = arrivalStation.get("name").getAsString();
+                String arrivalCity = arrivalStation.get("city").getAsString();
+                
+                String arrivalDateTime = trainObject.get("arrivalDateTime").getAsString();
+                
+                int seatsAvailableBusiness = trainObject.get("seatsAvailableBusiness").getAsInt();
+                double priceBusiness = trainObject.get("priceBusiness").getAsDouble();
+                
+                int seatsAvailableFirst = trainObject.get("seatsAvailableFirst").getAsInt();
+                double priceFirst = trainObject.get("priceFirst").getAsDouble();
+                
+                int seatsAvailableStandard = trainObject.get("seatsAvailableStandard").getAsInt();
+                double priceStandard = trainObject.get("priceStandard").getAsDouble();
+                
+                System.out.println("Train ID: " + id);
+                System.out.println("Departure: " + departureName + ", " + departureCity + " at " + departureDateTime);
+                System.out.println("Arrival: " + arrivalName + ", " + arrivalCity + " at " + arrivalDateTime);
+                System.out.println("Business seats available: " + seatsAvailableBusiness + " at €" + priceBusiness);
+                System.out.println("First class seats available: " + seatsAvailableFirst + " at €" + priceFirst);
+                System.out.println("Standard seats available: " + seatsAvailableStandard + " at €" + priceStandard);
+                System.out.println("-----------------------------------------------------------");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
     // To get all stations from a name or a city
     public static JsonArray fetchStations(int page, String name, String city) throws IOException {
         OkHttpClient client = new OkHttpClient();
@@ -83,5 +130,28 @@ public class Soap {
             return result;
         }
 
+
+
     }
+    // to get all informations about all trains (it depends on the filter)
+    public static JsonArray fetchTrains(Map<String, String> parameters) throws IOException {
+    OkHttpClient client = new OkHttpClient();
+
+    HttpUrl.Builder urlBuilder = HttpUrl.parse("http://127.0.0.1:8000/trains").newBuilder();
+    for (Map.Entry<String, String> entry : parameters.entrySet()) {
+        urlBuilder.addQueryParameter(entry.getKey(), entry.getValue());
+    }
+
+    String url = urlBuilder.build().toString();
+
+    Request request = new Request.Builder()
+            .url(url)
+            .build();
+
+    try (Response response = client.newCall(request).execute()) {
+        String jsonData = response.body().string();
+        JsonObject jsonObject = JsonParser.parseString(jsonData).getAsJsonObject();
+        return jsonObject.getAsJsonArray("hydra:member");
+    }
+}
 }
