@@ -39,8 +39,7 @@ public class Soap {
 
         Map<String, String> params = new HashMap<>();
         params.put("page", "1");
-        // Ajoutez tous les autres paramètres de la même manière...
-        // params.put("nom_du_parametre", "valeur");
+        // Add other parameters with the same way, example : params.put("name_of_the_parameter", "value");
         try {
             JsonArray trains = fetchTrains(params);
             for (JsonElement trainElement : trains) {
@@ -72,9 +71,9 @@ public class Soap {
                 System.out.println("Train ID: " + id);
                 System.out.println("Departure: " + departureName + ", " + departureCity + " at " + departureDateTime);
                 System.out.println("Arrival: " + arrivalName + ", " + arrivalCity + " at " + arrivalDateTime);
-                System.out.println("Business seats available: " + seatsAvailableBusiness + " at €" + priceBusiness);
-                System.out.println("First class seats available: " + seatsAvailableFirst + " at €" + priceFirst);
-                System.out.println("Standard seats available: " + seatsAvailableStandard + " at €" + priceStandard);
+                System.out.println("Business seats available: " + seatsAvailableBusiness + " at " + priceBusiness);
+                System.out.println("First class seats available: " + seatsAvailableFirst + " at " + priceFirst);
+                System.out.println("Standard seats available: " + seatsAvailableStandard + " at " + priceStandard);
                 System.out.println("-----------------------------------------------------------");
             }
         } catch (IOException e) {
