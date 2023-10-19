@@ -3,8 +3,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import okhttp3.HttpUrl;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import java.io.IOException;
@@ -12,6 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Soap {
+
+    // Useful for the PATCH method
+    private static final MediaType MERGE_PATCH_JSON = MediaType.get("application/merge-patch+json; charset=utf-8");
 
     public static void main(String[] args) {
         // tests
@@ -76,6 +81,30 @@ public class Soap {
                 System.out.println("Standard seats available: " + seatsAvailableStandard + " at " + priceStandard);
                 System.out.println("-----------------------------------------------------------");
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            JsonObject trainDetails = fetchTrainById("1");
+            System.out.println("Departure Station Name: " + trainDetails.get("departureStationName").getAsString());
+            System.out.println("Departure City: " + trainDetails.get("departureCity").getAsString());
+            System.out.println("Arrival Station Name: " + trainDetails.get("arrivalStationName").getAsString());
+            System.out.println("Arrival City: " + trainDetails.get("arrivalCity").getAsString());
+            System.out.println("Departure DateTime: " + trainDetails.get("departureDateTime").getAsString());
+            System.out.println("Arrival DateTime: " + trainDetails.get("arrivalDateTime").getAsString());
+            System.out.println("Seats Available (Business): " + trainDetails.get("seatsAvailableBusiness").getAsInt());
+            System.out.println("Price (Business): " + trainDetails.get("priceBusiness").getAsDouble());
+            System.out.println("Seats Available (First): " + trainDetails.get("seatsAvailableFirst").getAsInt());
+            System.out.println("Price (First): " + trainDetails.get("priceFirst").getAsDouble());
+            System.out.println("Seats Available (Standard): " + trainDetails.get("seatsAvailableStandard").getAsInt());
+            System.out.println("Price (Standard): " + trainDetails.get("priceStandard").getAsDouble());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            updateSeatsForTrain("1", 5,null,null);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -153,4 +182,90 @@ public class Soap {
         return jsonObject.getAsJsonArray("hydra:member");
     }
 }
+// To get all information about a train by its ID
+public static JsonObject fetchTrainById(String id) throws IOException {
+    OkHttpClient client = new OkHttpClient();
+
+    String url = "http://127.0.0.1:8000/trains/" + id;
+
+    Request request = new Request.Builder()
+            .url(url)
+            .build();
+
+    try (Response response = client.newCall(request).execute()) {
+        String jsonData = response.body().string();
+        JsonObject jsonObject = JsonParser.parseString(jsonData).getAsJsonObject();
+
+        String departureStationName = jsonObject.getAsJsonObject("departureStation").get("name").getAsString();
+        String departureCity = jsonObject.getAsJsonObject("departureStation").get("city").getAsString();
+        String arrivalStationName = jsonObject.getAsJsonObject("arrivalStation").get("name").getAsString();
+        String arrivalCity = jsonObject.getAsJsonObject("arrivalStation").get("city").getAsString();
+        String departureDateTime = jsonObject.get("departureDateTime").getAsString();
+        String arrivalDateTime = jsonObject.get("arrivalDateTime").getAsString();
+        int seatsAvailableBusiness = jsonObject.get("seatsAvailableBusiness").getAsInt();
+        double priceBusiness = jsonObject.get("priceBusiness").getAsDouble();
+        int seatsAvailableFirst = jsonObject.get("seatsAvailableFirst").getAsInt();
+        double priceFirst = jsonObject.get("priceFirst").getAsDouble();
+        int seatsAvailableStandard = jsonObject.get("seatsAvailableStandard").getAsInt();
+        double priceStandard = jsonObject.get("priceStandard").getAsDouble();
+
+        JsonObject result = new JsonObject();
+        result.addProperty("departureStationName", departureStationName);
+        result.addProperty("departureCity", departureCity);
+        result.addProperty("arrivalStationName", arrivalStationName);
+        result.addProperty("arrivalCity", arrivalCity);
+        result.addProperty("departureDateTime", departureDateTime);
+        result.addProperty("arrivalDateTime", arrivalDateTime);
+        result.addProperty("seatsAvailableBusiness", seatsAvailableBusiness);
+        result.addProperty("priceBusiness", priceBusiness);
+        result.addProperty("seatsAvailableFirst", seatsAvailableFirst);
+        result.addProperty("priceFirst", priceFirst);
+        result.addProperty("seatsAvailableStandard", seatsAvailableStandard);
+        result.addProperty("priceStandard", priceStandard);
+
+        return result;
+    }
+}
+
+// To update the number of seats for each types
+public static void updateSeatsForTrain(String id, Integer seatsAvailableStandard, Integer seatsAvailableFirst, Integer seatsAvailableBusiness) throws IOException {
+    OkHttpClient client = new OkHttpClient();
+
+    String url = "http://127.0.0.1:8000/trains/" + id;
+
+    JsonObject requestBodyJson = new JsonObject();
+    
+    StringBuilder seatsUpdated = new StringBuilder("");
+    
+    if (seatsAvailableStandard != null) {
+        requestBodyJson.addProperty("seatsAvailableStandard", seatsAvailableStandard);
+        seatsUpdated.append("Standard ");
+    }
+    
+    if (seatsAvailableFirst != null) {
+        requestBodyJson.addProperty("seatsAvailableFirst", seatsAvailableFirst);
+        seatsUpdated.append("First ");
+    }
+    
+    if (seatsAvailableBusiness != null) {
+        requestBodyJson.addProperty("seatsAvailableBusiness", seatsAvailableBusiness);
+        seatsUpdated.append("Business ");
+    }
+
+    RequestBody requestBody = RequestBody.create(requestBodyJson.toString(), MERGE_PATCH_JSON);
+
+    Request request = new Request.Builder()
+            .url(url)
+            .patch(requestBody)
+            .build();
+
+    try (Response response = client.newCall(request).execute()) {
+        if (!response.isSuccessful()) {
+            throw new IOException("Unexpected code " + response);
+        }
+        System.out.println(seatsUpdated + "seats updated successfully for train id : " + id);
+    }
+}
+
+
 }
