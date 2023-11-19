@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<wsdl:definitions name="Reservation"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  targetNamespace="Reservation"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:tns="Reservation"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+
+    <xsd:documentation></xsd:documentation>
+
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="Reservation">
+            <!-- +++++ -->
+            <xsd:complexType name="TrainSearch">
+                <xsd:sequence>
+                    <xsd:element name="departureCity" type="xsd:string"/>
+                    <xsd:element name="arrivalCity" type="xsd:string"/>
+                    <xsd:element name="outboundDateTimeMin" type="xsd:string"/>
+                    <xsd:element name="outboundDateTimeMax" type="xsd:string"/>
+                    <xsd:element name="returnDateTimeMin" type="xsd:string"/>
+                    <xsd:element name="returnDateTimeMax" type="xsd:string"/>
+                    <xsd:element name="numberOfTickets" type="xsd:int"/>
+                    <xsd:element name="travelClass" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="Train">
+                <xsd:sequence>
+                    <xsd:element name="id" type="xsd:int"/>
+                    <xsd:element name="departureCity" type="xsd:string"/>
+                    <xsd:element name="arrivalCity" type="xsd:string"/>
+                    <xsd:element name="departureStation" type="xsd:string"/>
+                    <xsd:element name="arrivalStation" type="xsd:string"/>
+                    <xsd:element name="departureDateTime" type="xsd:string"/>
+                    <xsd:element name="arrivalDateTime" type="xsd:string"/>
+                    <xsd:element name="seatsAvailableBusiness" type="xsd:int"/>
+                    <xsd:element name="priceBusiness" type="xsd:decimal"/>
+                    <xsd:element name="seatsAvailableFirst" type="xsd:int"/>
+                    <xsd:element name="priceFirst" type="xsd:decimal"/>
+                    <xsd:element name="seatsAvailableStandard" type="xsd:int"/>
+                    <xsd:element name="priceStandard" type="xsd:decimal"/>
+                    <xsd:element name="company" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <complexType name="TrainList">
+				<sequence>
+					<element name="outboundTrains" type="tns:Train" minOccurs="0" maxOccurs="unbounded"/>
+                    <element name="returnTrains" type="tns:Train" minOccurs="0" maxOccurs="unbounded"/>
+				</sequence>
+			</complexType>
+            <!-- +++++ -->
+        </xsd:schema>
+    </wsdl:types>
+
+    <!-- +++++ -->
+    <wsdl:message name="trainsAvailableRequest">
+        <wsdl:part name="trainSearch" type="tns:TrainSearch"/>
+    </wsdl:message>
+    <wsdl:message name="trainsAvailableResponse">
+        <wsdl:part name="result" type="tns:TrainList"/>
+    </wsdl:message>
+    <!-- +++++ -->
+
+    <wsdl:portType name="Reservation">
+        <!-- +++++ -->
+        <wsdl:operation name="trainsAvailable">
+            <wsdl:input message="tns:trainsAvailableRequest"/>
+            <wsdl:output message="tns:trainsAvailableResponse"/>
+        </wsdl:operation>
+        <!-- +++++ -->
+    </wsdl:portType>
+
+    <wsdl:binding name="Reservation" type="tns:Reservation">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <!-- +++++ --> 
+        <wsdl:operation name="trainsAvailable">
+            <soap:operation soapAction="http://127.0.0.1/server.php"/>
+            <wsdl:input>
+                <soap:body use="literal" namespace="Reservation"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" namespace="Reservation"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <!-- +++++ -->
+    </wsdl:binding>
+
+    <wsdl:service name="Reservation">
+        <wsdl:port binding="tns:Reservation" name="TrainReservation">
+            <soap:address location="http://127.0.0.1/server.php"/>
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>
