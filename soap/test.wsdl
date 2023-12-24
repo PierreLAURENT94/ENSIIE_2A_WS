@@ -48,6 +48,12 @@
                     <element name="returnTrains" type="tns:Train" minOccurs="0" maxOccurs="unbounded"/>
 				</sequence>
 			</complexType>
+            <xsd:complexType name="User">
+                <xsd:sequence>
+                    <xsd:element name="mail" type="xsd:string"/>
+                    <xsd:element name="password" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
             <!-- +++++ -->
         </xsd:schema>
     </wsdl:types>
@@ -59,6 +65,12 @@
     <wsdl:message name="trainsAvailableResponse">
         <wsdl:part name="result" type="tns:TrainList"/>
     </wsdl:message>
+    <wsdl:message name="userRequest">
+        <wsdl:part name="user" type="tns:User"/>
+    </wsdl:message>
+    <wsdl:message name="boolResponse">
+        <wsdl:part name="result" type="xsd:boolean"/>
+    </wsdl:message>
     <!-- +++++ -->
 
     <wsdl:portType name="Reservation">
@@ -67,6 +79,14 @@
             <wsdl:input message="tns:trainsAvailableRequest"/>
             <wsdl:output message="tns:trainsAvailableResponse"/>
         </wsdl:operation>
+        <wsdl:operation name="addUser">
+            <wsdl:input message="tns:userRequest"/>
+            <wsdl:output message="tns:boolResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="testUser">
+            <wsdl:input message="tns:userRequest"/>
+            <wsdl:output message="tns:boolResponse"/>
+        </wsdl:operation>
         <!-- +++++ -->
     </wsdl:portType>
 
@@ -74,6 +94,24 @@
         <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
         <!-- +++++ --> 
         <wsdl:operation name="trainsAvailable">
+            <soap:operation soapAction="http://127.0.0.1/server.php"/>
+            <wsdl:input>
+                <soap:body use="literal" namespace="Reservation"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" namespace="Reservation"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="addUser">
+            <soap:operation soapAction="http://127.0.0.1/server.php"/>
+            <wsdl:input>
+                <soap:body use="literal" namespace="Reservation"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" namespace="Reservation"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="testUser">
             <soap:operation soapAction="http://127.0.0.1/server.php"/>
             <wsdl:input>
                 <soap:body use="literal" namespace="Reservation"/>

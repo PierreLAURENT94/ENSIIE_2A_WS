@@ -212,6 +212,9 @@ class RestClient
 	}
 }
 
+// Connexion à la base de données
+$sql = new mysqli("127.0.0.1", "root", "", "soap");
+
 // Utilisation du constructeur avec l'URL de l'hôte
 $TGVinOui = new RestClient("http://127.0.0.1:8005/");
 // Exécution de la demo
@@ -261,6 +264,12 @@ class TrainList
 {
 	public $outboundTrains;
 	public $returnTrains;
+}
+
+class User
+{
+	public $mail;
+	public $password;
 }
 
 function trainsAvailable($trainSearch)
@@ -319,7 +328,36 @@ function trainsAvailable($trainSearch)
 	return $trainList;
 }
 
+function addUser($user)
+{
+	global $sql;
+	$insertUser = $sql->prepare("INSERT INTO users (mail, password) VALUES (?, ?)");
+    $insertUser->bind_param("ss", $user->mail, $user->password);
+	$insertUser->execute();
+
+	return true;
+}
+
+function testUser($user)
+{
+	global $sql;
+	$selectUser = $sql->prepare("SELECT * FROM users WHERE mail = ? AND password = ?");
+	$selectUser->bind_param("ss", $user->mail, $user->password);
+	$selectUser->execute();
+	$selectUser->store_result();
+
+	if ($selectUser->num_rows > 0) {
+		$selectUser->close();
+		return true;
+	} else {
+		$selectUser->close();
+		return false;
+	}
+}
+
 $server->addFunction('trainsAvailable');
+$server->addFunction('addUser');
+$server->addFunction('testUser');
 
 // start handling requests
 $server->handle();
