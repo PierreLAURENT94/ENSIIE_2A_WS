@@ -272,6 +272,16 @@ class User
 	public $password;
 }
 
+class Reservation
+{
+	public $user;
+	public $outboundTrainId;
+	public $returnTrainId;
+	public $numberOfTickets;
+	public $travelClass;
+	public $flexible;
+}
+
 function trainsAvailable($trainSearch)
 {
 	global $TGVinOui;
@@ -332,7 +342,7 @@ function addUser($user)
 {
 	global $sql;
 	$insertUser = $sql->prepare("INSERT INTO users (mail, password) VALUES (?, ?)");
-    $insertUser->bind_param("ss", $user->mail, $user->password);
+	$insertUser->bind_param("ss", $user->mail, $user->password);
 	$insertUser->execute();
 
 	return true;
@@ -353,6 +363,83 @@ function testUser($user)
 		$selectUser->close();
 		return false;
 	}
+}
+
+function makeReservation($reservation)
+{
+	global $sql;
+	global $TGVinOui;
+	$selectUser = $sql->prepare("SELECT id FROM users WHERE mail = ? AND password = ?");
+	$selectUser->bind_param("ss", $reservation->user->mail, $reservation->user->password);
+	$selectUser->execute();
+	$selectUser->store_result();
+
+	$outboundTrain = $TGVinOui->fetchTrainById($reservation->outboundTrainId);
+	$returnTrain = null;
+
+	if ($reservation->returnTrainId != null) {
+		$returnTrain = $TGVinOui->fetchTrainById($reservation->returnTrainId);
+	}
+
+	if ($selectUser->num_rows > 0) {
+		$selectUser->bind_result($userId);
+		$TGVinOui->fetchTrainById($reservation->user);
+
+		$returnDate = $returnTrain !== null ? $returnTrain['departureDateTime'] : null;
+
+		switch ($reservation->travelClass) {
+			case 'Business':
+				$totalPrice = $outboundTrain['priceBusiness'] * $reservation->numberOfTickets;
+				break;
+			case 'First':
+				$totalPrice = $outboundTrain['priceFirst'] * $reservation->numberOfTickets;
+				break;
+			case 'Standard':
+				$totalPrice = $outboundTrain['priceStandard'] * $reservation->numberOfTickets;
+				break;
+			default:
+				return false;
+		}
+		if ($returnDate) {
+			switch ($reservation->travelClass) {
+				case 'Business':
+					$totalPrice += $returnTrain['priceBusiness'] * $reservation->numberOfTickets;
+					break;
+				case 'First':
+					$totalPrice += $returnTrain['priceFirst'] * $reservation->numberOfTickets;
+					break;
+				case 'Standard':
+					$totalPrice += $returnTrain['priceStandard'] * $reservation->numberOfTickets;
+					break;
+				default:
+					return false;
+			} 
+		}
+
+		if ($reservation->flexible) {
+			$totalPrice *= 1.2;
+		}
+
+		$insertReservation = $sql->prepare("INSERT INTO reservation (user_id, departure_station, arrival_station, departure_date, return_date, number_of_tickets, travel_class, total_price) VALUES (?, ?, ?, ?, ?, ?, ?)");
+		if ($reservation->returnTrain)
+			$insertReservation->bind_param(
+				"issssisd",
+				$userId,
+				$outboundTrain['departureStationName'],
+				$outboundTrain['arrivalStationName'],
+				$outboundTrain['departureDateTime'],
+				$returnDate,
+				$reservation->numberOfTickets,
+				$reservation->travelClass,
+				$totalPrice
+			);
+
+	} else {
+		return false;
+	}
+
+
+	return true;
 }
 
 $server->addFunction('trainsAvailable');
