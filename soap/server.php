@@ -216,17 +216,19 @@ class RestClient
 $sql = new mysqli("127.0.0.1", "root", "", "soap");
 
 // Utilisation du constructeur avec l'URL de l'hôte
-$TGVinOui = new RestClient("http://127.0.0.1:8005/");
+$TGVinOui = new RestClient("http://127.0.0.1:8000/");
 // Exécution de la demo
 // $TGVinOui->demo();
 
-// turn off WSDL caching
 ini_set("soap.wsdl_cache_enabled", "0");
 
-// initialize SOAP Server
 $server = new SoapServer("test.wsdl", [
 	'classmap' => [
 		'trainSearch' => 'TrainSearch',
+		'train' => 'Train',
+		'trainList' => 'TrainList',
+		'user' => 'User',
+		'reservation' => "Reservation"
 	]
 ]);
 
@@ -274,7 +276,8 @@ class User
 
 class Reservation
 {
-	public $user;
+	public $userMail;
+	public $userPassword;
 	public $outboundTrainId;
 	public $returnTrainId;
 	public $numberOfTickets;
@@ -370,32 +373,43 @@ function makeReservation($reservation)
 	global $sql;
 	global $TGVinOui;
 	$selectUser = $sql->prepare("SELECT id FROM users WHERE mail = ? AND password = ?");
-	$selectUser->bind_param("ss", $reservation->user->mail, $reservation->user->password);
+	$selectUser->bind_param("ss", $reservation->userMail, $reservation->userPassword);
 	$selectUser->execute();
 	$selectUser->store_result();
 
-	$outboundTrain = $TGVinOui->fetchTrainById($reservation->outboundTrainId);
-	$returnTrain = null;
-
-	if ($reservation->returnTrainId != null) {
-		$returnTrain = $TGVinOui->fetchTrainById($reservation->returnTrainId);
-	}
-
 	if ($selectUser->num_rows > 0) {
 		$selectUser->bind_result($userId);
-		$TGVinOui->fetchTrainById($reservation->user);
+		$selectUser->fetch();
+		$outboundTrain = $TGVinOui->fetchTrainById($reservation->outboundTrainId);
+		$returnTrain = null;
+
+		if($reservation->returnTrainId){
+			$returnTrain = $TGVinOui->fetchTrainById($reservation->returnTrainId);
+		}
 
 		$returnDate = $returnTrain !== null ? $returnTrain['departureDateTime'] : null;
 
 		switch ($reservation->travelClass) {
 			case 'Business':
 				$totalPrice = $outboundTrain['priceBusiness'] * $reservation->numberOfTickets;
+				if ($outboundTrain["seatsAvailableBusiness"] < $reservation->numberOfTickets) {
+					return false;
+				}
+				$TGVinOui->updateSeatsForTrain($reservation->outboundTrainId, null, null, $outboundTrain["seatsAvailableBusiness"] - $reservation->numberOfTickets);
 				break;
 			case 'First':
 				$totalPrice = $outboundTrain['priceFirst'] * $reservation->numberOfTickets;
+				if ($outboundTrain->seatsAvailableFirst < $reservation->numberOfTickets) {
+					return false;
+				}
+				$TGVinOui->updateSeatsForTrain($outboundTrain->id, null, $outboundTrain->seatsAvailableBusiness - $reservation->numberOfTickets, null);
 				break;
 			case 'Standard':
 				$totalPrice = $outboundTrain['priceStandard'] * $reservation->numberOfTickets;
+				if ($outboundTrain->seatsAvailableStandard < $reservation->numberOfTickets) {
+					return false;
+				}
+				$TGVinOui->updateSeatsForTrain($outboundTrain->id, $outboundTrain->seatsAvailableBusiness - $reservation->numberOfTickets, null, null);
 				break;
 			default:
 				return false;
@@ -404,12 +418,24 @@ function makeReservation($reservation)
 			switch ($reservation->travelClass) {
 				case 'Business':
 					$totalPrice += $returnTrain['priceBusiness'] * $reservation->numberOfTickets;
+					if ($returnTrain->seatsAvailableBusiness < $reservation->numberOfTickets) {
+						return false;
+					}
+					$TGVinOui->updateSeatsForTrain($returnTrain->id, null, null, $outboundTrain->seatsAvailableBusiness - $reservation->numberOfTickets);
 					break;
 				case 'First':
 					$totalPrice += $returnTrain['priceFirst'] * $reservation->numberOfTickets;
+					if ($returnTrain->seatsAvailableFirst < $reservation->numberOfTickets) {
+						return false;
+					}
+					$TGVinOui->updateSeatsForTrain($returnTrain->id, null, $outboundTrain->seatsAvailableBusiness - $reservation->numberOfTickets, null);
 					break;
 				case 'Standard':
 					$totalPrice += $returnTrain['priceStandard'] * $reservation->numberOfTickets;
+					if ($returnTrain->seatsAvailableStandard < $reservation->numberOfTickets) {
+						return false;
+					}
+					$TGVinOui->updateSeatsForTrain($returnTrain->id, $outboundTrain->seatsAvailableBusiness - $reservation->numberOfTickets, null, null);
 					break;
 				default:
 					return false;
@@ -420,24 +446,30 @@ function makeReservation($reservation)
 			$totalPrice *= 1.2;
 		}
 
-		$insertReservation = $sql->prepare("INSERT INTO reservation (user_id, departure_station, arrival_station, departure_date, return_date, number_of_tickets, travel_class, total_price) VALUES (?, ?, ?, ?, ?, ?, ?)");
-		if ($reservation->returnTrain)
-			$insertReservation->bind_param(
-				"issssisd",
-				$userId,
-				$outboundTrain['departureStationName'],
-				$outboundTrain['arrivalStationName'],
-				$outboundTrain['departureDateTime'],
-				$returnDate,
-				$reservation->numberOfTickets,
-				$reservation->travelClass,
-				$totalPrice
-			);
+		if ($returnDate) {
+			$TGVinOui->updateSeatsForTrain();
+		}
+
+		$insertReservation = $sql->prepare("INSERT INTO reservation (user_id, departure_station, arrival_station, departure_date, return_date, number_of_tickets, travel_class, total_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+
+		$insertReservation->bind_param(
+			"issssisd",
+			$userId,
+			$outboundTrain['departureStationName'],
+			$outboundTrain['arrivalStationName'],
+			$outboundTrain['departureDateTime'],
+			$returnDate,
+			$reservation->numberOfTickets,
+			$reservation->travelClass,
+			$totalPrice
+		);
+		
+		$insertReservation->execute();
 
 	} else {
+		var_dump("rat");
 		return false;
 	}
-
 
 	return true;
 }
@@ -445,6 +477,19 @@ function makeReservation($reservation)
 $server->addFunction('trainsAvailable');
 $server->addFunction('addUser');
 $server->addFunction('testUser');
+$server->addFunction('makeReservation');
 
 // start handling requests
 $server->handle();
+
+
+// $reservation = new Reservation();
+// $reservation->userMail = "pierre@test.rat";
+// $reservation->userPassword = "123";
+// $reservation->outboundTrainId = 266;
+// $reservation->returnTrainId = null;
+// $reservation->numberOfTickets = 2;
+// $reservation->travelClass = "Business";
+// $reservation->flexible = false;
+
+// var_dump(makeReservation($reservation));
