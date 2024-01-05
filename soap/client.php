@@ -52,6 +52,23 @@ class Reservation
 	public $flexible;
 }
 
+class ReservationDone
+{
+	public $departureStation;
+	public $arrivalStation;
+	public $departureDateTime;
+	public $returnDateTime;
+	public $numberOfTickets;
+	public $travelClass;
+	public $flexible;
+	public $totalPrice;
+}
+
+class ReservationDoneList
+{
+	public $reservationDones;
+}
+
 ini_set("soap.wsdl_cache_enabled", "0");
 
 // initialize SOAP client and call web service function
@@ -64,14 +81,23 @@ $trainSearch->outboundDateTimeMin = '2023-12-31T11:00:00+02:00';
 $trainSearch->outboundDateTimeMax = '2023-12-31T23:00:00+02:00';
 $trainSearch->returnDateTimeMin = '2023-12-31T00:00:00+02:00';
 $trainSearch->returnDateTimeMax = '2023-12-31T23:00:00+02:00';
-$trainSearch->numberOfTickets = 5;
+$trainSearch->numberOfTickets = 2;
 $trainSearch->travelClass = 'Standard';
 
 $trainList = $client->trainsAvailable($trainSearch);
 $outboundTrains = $client->trainsAvailable($trainSearch)->outboundTrains;
+$returnTrains = $client->trainsAvailable($trainSearch)->returnTrains;
+
 foreach ($outboundTrains as $train) {
 	$departureDateTime = DateTime::createFromFormat(DateTime::ATOM, $train->departureDateTime);
-	echo "• " . $train->company . " le " . $departureDateTime->format('d/m/Y à ') . $departureDateTime->format('H') . "h" . $departureDateTime->format('i') . " au prix de " . $train->priceStandard . " €<br><br>";
+	echo "• " . $train->seatsAvailableStandard . " : " . $train->company . " le " . $departureDateTime->format('d/m/Y à ') . $departureDateTime->format('H') . "h" . $departureDateTime->format('i') . " au prix de " . $train->priceStandard . " €<br><br>";
+}
+
+echo "<br><br><br><br>"; 
+
+foreach ($returnTrains as $train) {
+	$departureDateTime = DateTime::createFromFormat(DateTime::ATOM, $train->departureDateTime);
+	echo "• " . $train->seatsAvailableStandard . " : " . $train->company . " le " . $departureDateTime->format('d/m/Y à ') . $departureDateTime->format('H') . "h" . $departureDateTime->format('i') . " au prix de " . $train->priceStandard . " €<br><br>";
 }
 
 $user = new User();
@@ -80,15 +106,15 @@ $user->password = '123';
 
 //$client->addUser($user);
 
-var_dump($client->testUser($user));
-
 $reservation = new Reservation();
 $reservation->userMail = $user->mail;
 $reservation->userPassword = $user->password;
-$reservation->outboundTrainId =  $outboundTrains[0]->id;
-$reservation->returnTrainId = null;
+$reservation->outboundTrainId =  $outboundTrains[1]->id;
+$reservation->returnTrainId = $returnTrains[0]->id;
 $reservation->numberOfTickets = 2;
-$reservation->travelClass = "Business";
-$reservation->flexible = false;
+$reservation->travelClass = "Standard";
+$reservation->flexible = true;
 
-var_dump($client->makeReservation($reservation));
+$client->makeReservation($reservation);
+
+var_dump($client->listReservation($user));

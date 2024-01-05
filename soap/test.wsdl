@@ -65,6 +65,23 @@
                     <xsd:element name="flexible" type="xsd:boolean"/>
                 </xsd:sequence>
             </xsd:complexType>
+            <xsd:complexType name="ReservationDone">
+                <xsd:sequence>
+                    <xsd:element name="departureStation" type="xsd:string"/>
+                    <xsd:element name="arrivalStation" type="xsd:string"/>
+                    <xsd:element name="departureDateTime" type="xsd:string"/>
+                    <xsd:element name="returnDateTime" type="xsd:string"/>
+                    <xsd:element name="numberOfTickets" type="xsd:int"/>
+                    <xsd:element name="travelClass" type="xsd:string"/>
+                    <xsd:element name="flexible" type="xsd:boolean"/>
+                    <xsd:element name="totalPrice" type="xsd:decimal"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="ReservationDoneList">
+                <sequence>
+					<element name="ReservationDones" type="tns:ReservationDone" minOccurs="0" maxOccurs="unbounded"/>
+				</sequence>
+            </xsd:complexType>
             <!-- +++++ -->
         </xsd:schema>
     </wsdl:types>
@@ -83,7 +100,10 @@
         <wsdl:part name="result" type="xsd:boolean"/>
     </wsdl:message>
     <wsdl:message name="makeReservationRequest">
-        <wsdl:part name="Reservation" type="tns:Reservation"/>
+        <wsdl:part name="reservation" type="tns:Reservation"/>
+    </wsdl:message>
+    <wsdl:message name="listReservationResponse">
+        <wsdl:part name="reservations" type="tns:ReservationDoneList"/>
     </wsdl:message>
     <!-- +++++ -->
 
@@ -104,6 +124,10 @@
         <wsdl:operation name="makeReservation">
             <wsdl:input message="tns:makeReservationRequest"/>
             <wsdl:output message="tns:boolResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="listReservation">
+            <wsdl:input message="tns:userRequest"/>
+            <wsdl:output message="tns:listReservationResponse"/>
         </wsdl:operation>
         <!-- +++++ -->
     </wsdl:portType>
@@ -139,6 +163,15 @@
             </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="makeReservation">
+            <soap:operation soapAction="http://127.0.0.1/server.php"/>
+            <wsdl:input>
+                <soap:body use="literal" namespace="ReservationWS"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" namespace="ReservationWS"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listReservation">
             <soap:operation soapAction="http://127.0.0.1/server.php"/>
             <wsdl:input>
                 <soap:body use="literal" namespace="ReservationWS"/>

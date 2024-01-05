@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS reservation (
     return_date DATETIME,
     number_of_tickets INT NOT NULL,
     travel_class VARCHAR(50) NOT NULL,
+    flexible BOOLEAN NOT NULL,
     total_price FLOAT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
