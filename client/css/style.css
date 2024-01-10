@@ -1,0 +1,392 @@
+/* style.css */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+}
+
+.header {
+    background-color: #774d25; /* Couleur marron du logo */
+    display: flex; /* Activez flexbox pour l'en-tête */
+    align-items: center; /* Alignez verticalement les enfants de l'en-tête */
+    justify-content: space-between; /* Espace entre le logo et le menu de navigation */
+    padding: 0 20px; /* Padding horizontal pour l'en-tête */
+    height: 100px;
+}
+
+.background-image-container {
+    background: url('../Superbe\ Paysage\ -\ Train\ -\ Wallpaper\ HD.jpg') no-repeat center center/cover;
+    position: relative;
+    height: 400px; /* ou la hauteur que vous souhaitez pour votre image */
+    display: flex;
+    justify-content: center; /* Centrer horizontalement */
+    align-items: flex-end; /* Aligner le formulaire au bas de l'image */
+}
+
+
+.trip-type-container {
+    display: flex;
+    justify-content: left; /* Centrer les boutons radio */
+    margin-bottom: 10px; /* Espace entre les boutons radio et le formulaire */
+    width: 100%; /* S'assurer que le conteneur prend toute la largeur */
+}
+
+.trip-type-container input[type="radio"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    border: 2px solid #774d25;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-right: 5px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.trip-type-container input[type="radio"]:checked {
+    background-color: #e4b062;
+}
+
+.trip-type-container {
+    display: flex;
+    align-items: center; /* Aligner les enfants du conteneur sur l'axe transversal (vertical ici) */
+    justify-content: start; /* Aligner les enfants du conteneur sur l'axe principal (horizontal ici) */
+    gap: 8px; /* Espacement entre les éléments */
+}
+
+.trip-type-container input[type="radio"] {
+    margin: 0;
+    position: relative;
+    top: -1px; /* Ajustement pour un alignement précis en fonction de votre design */
+}
+
+.trip-type-container label {
+    margin: 0;
+    padding-left: 4px; /* Espace entre la case à cocher et le label */
+    font-size: 16px; /* Augmentez la taille de police si nécessaire */
+    cursor: pointer;
+}
+
+
+/* Style pour les états hover */
+.trip-type-container label:hover {
+    color: #774d25;
+}
+
+.trip-type-container input[type="radio"]:hover + label {
+    color: #774d25;
+}
+
+
+.form-container {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: -50px; /* Ajustez selon la hauteur du formulaire pour le chevauchement */
+    max-width: fit-content; /* Ajustez selon la largeur souhaitée pour votre formulaire */
+    width: calc(100% - 40px); /* Ajustez selon la largeur souhaitée en considérant le padding */
+    box-sizing: border-box;
+    z-index: 2;
+    display: flex;
+    flex-direction: column; /* Organise les enfants en colonne */
+    align-items: left; /* Centre les enfants */
+    
+}
+
+.form-container .form-group {
+    flex: 1; /* Allow each form group to grow */
+    min-width: 120px; /* Minimum width for each form group */
+    margin: 0 10px; /* Space between form items */
+}
+
+.form-container .search-button {
+    flex: 0 0 auto; /* Do not allow the search button to grow */
+}
+
+.navbar .menu {
+    list-style: none; /* Supprimez le style de liste par défaut */
+    display: flex; /* Activez flexbox pour le menu */
+    margin: 0; /* Réinitialisez la marge pour le menu */
+    padding: 0; /* Réinitialisez le padding pour le menu */
+}
+
+.navbar .menu li {
+    padding: 0 20px; /* Espace entre les éléments du menu */
+}
+
+.navbar .menu li a {
+    color: #ffffff; /* Couleur du texte des liens */
+    text-decoration: none; /* Supprimez le soulignement des liens */
+    font-weight: bold;
+}
+
+.navbar .menu li a.active {
+    color: #e4b062; /* Couleur pour le lien actif */
+}
+
+
+
+#logo {
+    height: 100%; /* Le logo prendra la pleine hauteur du bandeau */
+    width: auto; /* Gardez le ratio d'aspect */
+}
+
+.search-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Centrer les éléments du formulaire */
+    gap: 10px;
+    width: 100%; /* S'assurer que le conteneur prend toute la largeur */
+}
+
+.search-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    height: max-content;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+}
+
+.search-button {
+    background-color: #e4b062; /* Couleur de votre logo */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.search-button:hover {
+    background-color: #ffc369;
+}
+
+
+
+.train-container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+}
+
+.train-card {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.train-times {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.departure-time, .travel-time, .arrival-time {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.travel-time{
+    color:#c8c8c8;
+}
+
+.line {
+    flex-grow: 1; /* Pour que les lignes occupent tout l'espace disponible */
+    height: 1px; /* Hauteur du trait */
+    background-color: #c8c8c8; /* Couleur du trait */
+    margin: 0 5px; /* Espacement autour des traits */
+}
+
+.train-locations {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px; /* Ajoutez une marge en bas */
+}
+
+.departure-station, .arrival-station {
+    font-size: 1em;
+}
+
+.train-action {
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; /* Assurez-vous que le conteneur utilise toute la largeur disponible */
+    margin-top: 10px;
+}
+
+
+.class-selection {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espace entre chaque option */
+}
+
+.class-selection label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.class-selection input[type="radio"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    border: 2px solid #774d25;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-right: 5px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.train-action button {
+    padding: 10px 20px;
+    background-color: #e4b062; /* Couleur du fond du bouton */
+    color: white; /* Couleur du texte du bouton */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: auto; /* Cela pousse le bouton vers la droite */
+}
+
+.train-action button:hover {
+    background-color: #ffc369;
+}
+
+.class-selection input[type="radio"]:checked {
+    background-color: #e4b062;
+}
+
+.class-selection label:hover {
+    color: #774d25;
+}
+
+.class-selection input[type="radio"]:hover + label {
+    color: #774d25;
+}
+
+
+.tooltip-icon {
+    font-size: 24px; /* Ou la taille que vous préférez */
+    color: #2A4B8D; /* Couleur bleue de l'icône */
+    margin-right: 10px; /* Espace avant le bouton Acheter */
+    cursor: help; /* Curseur d'aide pour indiquer qu'il s'agit d'une info-bulle */
+}
+
+.reservation-date {
+    font-weight: bold;
+    color: #d35400;
+}
+
+
+.price {
+    font-weight: bold; /* Rend le texte en gras */
+    color: #4CAF50; /* Couleur verte, similaire à celle du dollar */
+}
+
+
+.alert {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.alert-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+
+
+.close-btn {
+    float: right;
+    font-size: 20px;
+    line-height: 20px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0 8px;
+    color: inherit;
+}
+
+.centered-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh; /* Hauteur minimale */
+    padding-top: 20px; /* Espacement entre le header et le formulaire */
+}
+
+.login-card {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 300px; /* Largeur fixe pour la carte */
+}
+
+.login-card h2 {
+    margin-top: 10px; /* Réduit la marge en haut */
+}
+
+/* Ajout de styles pour les éléments du formulaire à l'intérieur de .login-card */
+.login-card label, 
+.login-card input[type="email"], 
+.login-card input[type="password"], 
+.login-card button {
+    display: block; /* Affiche sur des lignes distinctes */
+    width: 100%; /* Utilise toute la largeur disponible */
+    margin-bottom: 10px; /* Espacement entre les éléments */
+}
+
+
+
+
+
+/* Responsive adjustments if necessary */
+@media (max-width: 768px) {
+    .form-container {
+        flex-direction: column;
+        margin-top: 0; /* Reset the negative margin on smaller screens */
+    }
+
+    .form-container .form-group {
+        flex: 0 0 100%; /* Full width for form groups on smaller screens */
+        margin: 10px 0; /* Space between stacked form items */
+    }
+
+    .form-container .search-button {
+        width: 100%; /* Full width for the search button on smaller screens */
+    }
+}
