@@ -51,3 +51,9 @@ symfony server:start --port=8000
 ### Enable soap extension in php.ini file
 
 ### Put the client folder in the apache web folder
+
+### Put the content of the client folder in the apache web folder
+
+### Put the client.php of soap folder in the apache web folder
+
+### Comment all after line 76 in client.php
