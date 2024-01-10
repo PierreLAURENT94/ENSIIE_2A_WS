@@ -35,8 +35,14 @@
             $trainSearch->departureCity = $departureCity;
             $trainSearch->arrivalCity = $arrivalCity;
             $trainSearch->outboundDateTimeMin = $outboundDateTimeMin;
+            $max = new DateTime($outboundDateTimeMin);
+            $max->setTime(23, 59);
+            $trainSearch->outboundDateTimeMax = $max->format(DateTime::ATOM);
             if ($isReturnChecked) {
                 $trainSearch->returnDateTimeMin = $_POST['returnDateTimeMin'];
+                $max = new DateTime($_POST['returnDateTimeMin']);
+                $max->setTime(23, 59);
+                $trainSearch->returnDateTimeMax = $max->format(DateTime::ATOM);
             }
             $trainSearch->numberOfTickets = $numberOfTickets;
 
