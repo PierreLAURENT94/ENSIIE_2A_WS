@@ -136,7 +136,7 @@
         <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
         <!-- +++++ --> 
         <wsdl:operation name="trainsAvailable">
-            <soap:operation soapAction="http://127.0.0.1/server.php"/>
+            <soap:operation soapAction="http://127.0.0.1/server.php/trainsAvailable"/>
             <wsdl:input>
                 <soap:body use="literal" namespace="ReservationWS"/>
             </wsdl:input>
@@ -145,7 +145,7 @@
             </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="addUser">
-            <soap:operation soapAction="http://127.0.0.1/server.php"/>
+            <soap:operation soapAction="http://127.0.0.1/server.php/addUser"/>
             <wsdl:input>
                 <soap:body use="literal" namespace="ReservationWS"/>
             </wsdl:input>
@@ -154,7 +154,7 @@
             </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="testUser">
-            <soap:operation soapAction="http://127.0.0.1/server.php"/>
+            <soap:operation soapAction="http://127.0.0.1/server.php/testUser"/>
             <wsdl:input>
                 <soap:body use="literal" namespace="ReservationWS"/>
             </wsdl:input>
@@ -163,7 +163,7 @@
             </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="makeReservation">
-            <soap:operation soapAction="http://127.0.0.1/server.php"/>
+            <soap:operation soapAction="http://127.0.0.1/server.php/makeReservation"/>
             <wsdl:input>
                 <soap:body use="literal" namespace="ReservationWS"/>
             </wsdl:input>
@@ -172,7 +172,7 @@
             </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="listReservation">
-            <soap:operation soapAction="http://127.0.0.1/server.php"/>
+            <soap:operation soapAction="http://127.0.0.1/server.php/listReservation"/>
             <wsdl:input>
                 <soap:body use="literal" namespace="ReservationWS"/>
             </wsdl:input>
