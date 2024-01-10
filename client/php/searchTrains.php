@@ -43,21 +43,21 @@
             try {
                 $trainList = $client->trainsAvailable($trainSearch);
 
-                // Vérifiez si le résultat pour outboundTrains est un objet unique et convertissez-le en tableau
+           
                 if (!empty($trainList->outboundTrains) && !is_array($trainList->outboundTrains)) {
-                    $trainList->outboundTrains = [$trainList->outboundTrains]; // Convertissez en tableau
+                    $trainList->outboundTrains = [$trainList->outboundTrains];
                 }
 
                 if (!empty($trainList->outboundTrains)) {
                     echo "<h2>Trains Disponibles pour le départ</h2>";
                     foreach ($trainList->outboundTrains as $train) {
-                        // Conversion des dates et heures en timestamps pour le calcul
+                 
                         $departureTimestamp = strtotime($train->departureDateTime);
                         $arrivalTimestamp = strtotime($train->arrivalDateTime);
 
-                        // Calcul de la durée du trajet
+                    
                         $duration = $arrivalTimestamp - $departureTimestamp;
-                        // Conversion de la durée en heures et minutes
+                 
                         $hours = floor($duration / 3600);
                         $minutes = floor(($duration / 60) % 60);
 
@@ -74,7 +74,7 @@
                         echo "<span class='arrival-station'>" . htmlspecialchars($train->arrivalCity) . " (" . htmlspecialchars($train->arrivalStation) . ")</span>";
                         echo "</div>";
                         echo "<div class='train-action'>";
-                        // Checkbox pour la sélection de la classe avec le prix
+            
                         echo "<form id='trainForm' class='class-selection' action='login.php' method='post'>";
                         echo "<input type='hidden' name='outboundTrainId' value='" . htmlspecialchars($train->id) . "'>";
                         echo "<input type='hidden' name='numberOfTickets' value='" . $numberOfTickets . "'>";
@@ -92,21 +92,21 @@
                     echo "<h2>Aucun train disponible pour le départ.</h2>";
                 }
 
-                 // Faites la même vérification pour returnTrains
+             
                 if (!empty($trainList->returnTrains) && !is_array($trainList->returnTrains)) {
-                    $trainList->returnTrains = [$trainList->returnTrains]; // Convertissez en tableau
+                    $trainList->returnTrains = [$trainList->returnTrains]; 
                 }
 
                 if ($isReturnChecked && !empty($trainList->returnTrains)) {
                     echo "<h2>Trains Disponibles pour le retour</h2>";
                     foreach ($trainList->returnTrains as $train) {
-                       // Conversion des dates et heures en timestamps pour le calcul
+                 
                         $departureTimestamp = strtotime($train->departureDateTime);
                         $arrivalTimestamp = strtotime($train->arrivalDateTime);
 
-                        // Calcul de la durée du trajet
+                    
                         $duration = $arrivalTimestamp - $departureTimestamp;
-                        // Conversion de la durée en heures et minutes
+                  
                         $hours = floor($duration / 3600);
                         $minutes = floor(($duration / 60) % 60);
 
@@ -123,7 +123,7 @@
                         echo "<span class='arrival-station'>" . htmlspecialchars($train->arrivalCity) . " (" . htmlspecialchars($train->arrivalStation) . ")</span>";
                         echo "</div>";
                         echo "<div class='train-action'>";
-                        // Checkbox pour la sélection de la classe avec le prix
+               
                         echo "<form id='trainForm' class='class-selection' action='login.php' method='post'>";
                         echo "<input type='hidden' name='returnTrainId' value='" . htmlspecialchars($train->id) . "'>";
                         echo "<input type='hidden' name='numberOfTickets' value='" . $numberOfTickets . "'>";
@@ -147,7 +147,7 @@
         ?>
         <script>
 document.addEventListener("DOMContentLoaded", function() {
-    // Sélectionnez tous les formulaires avec la classe 'class-selection'
+
     const forms = document.querySelectorAll('.class-selection');
 
     forms.forEach(form => {
@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             if (!selectedClass) {
                 alert("Veuillez choisir un type de siège.");
-                event.preventDefault(); // Empêcher la soumission du formulaire
+                event.preventDefault();
             }
         });
     });

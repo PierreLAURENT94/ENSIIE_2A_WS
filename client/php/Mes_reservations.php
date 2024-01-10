@@ -19,27 +19,33 @@
         </nav>
     </header>
 <?php
-require_once '../client.php'; // Assurez-vous que le chemin d'accès est correct
+require_once '../client.php';
 session_start();
 if (isset($_SESSION['user'])) {
-    $user = $_SESSION['user']; // Récupérer l'utilisateur de la session
-    $reservations = $client->listReservation($user); // Récupérer les réservations
+    $user = $_SESSION['user'];
+    $reservations = $client->listReservation($user);
     $reservationDones = $reservations->ReservationDones;
+
+    if (!is_array($reservationDones)) {
+        $reservationDones = array($reservationDones);
+    }
 
     echo "<div class='train-container'>";
     echo "<h2>Réservation de Train de $user->mail</h2>";
 foreach ($reservationDones as $reservation) {
     echo "<div class='train-card'>";
+    echo "<p><strong>Gare de départ:</strong> <span class ='station'> " . htmlspecialchars($reservation->departureStation) . "</p>";
     echo "<p><strong>Date de départ:</strong> <span class ='reservation-date'> " . htmlspecialchars(date('d M Y \à H:i', strtotime($reservation->departureDateTime))) . "</span></p>";
+    echo "<p><strong>Gare de d'arrivée:</strong> <span class ='station'>" . htmlspecialchars($reservation->arrivalStation) . "</span></p>";
     echo "<p><strong>Nombre de billets:</strong> " . htmlspecialchars($reservation->numberOfTickets) . "</p>";
     echo "<p><strong>Classe de voyage:</strong> " . htmlspecialchars($reservation->travelClass) . "</p>";
     echo "<p><strong>Flexibilité:</strong> " . ($reservation->flexible ? 'Oui' : 'Non') . "</p>";
     echo "<p><strong>Prix total:</strong> <span class='price'>" . htmlspecialchars($reservation->totalPrice) . " € </span></p>";
-    echo "</div>"; // fin de train-card
+    echo "</div>";
 }
-    echo "</div>"; // fin de train-container
+    echo "</div>";
 } else {
-    header('Location: login.php'); // Rediriger vers login.php si l'utilisateur n'est pas connecté
+    header('Location: login.php');
     exit;
 }
 ?>

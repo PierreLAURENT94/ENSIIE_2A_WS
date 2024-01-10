@@ -1,4 +1,4 @@
-/* style.css */
+
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f4f4f4;
@@ -6,29 +6,29 @@ body {
 }
 
 .header {
-    background-color: #774d25; /* Couleur marron du logo */
-    display: flex; /* Activez flexbox pour l'en-tête */
-    align-items: center; /* Alignez verticalement les enfants de l'en-tête */
-    justify-content: space-between; /* Espace entre le logo et le menu de navigation */
-    padding: 0 20px; /* Padding horizontal pour l'en-tête */
+    background-color: #774d25;
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 0 20px; 
     height: 100px;
 }
 
 .background-image-container {
     background: url('../Superbe\ Paysage\ -\ Train\ -\ Wallpaper\ HD.jpg') no-repeat center center/cover;
     position: relative;
-    height: 400px; /* ou la hauteur que vous souhaitez pour votre image */
+    height: 400px; 
     display: flex;
-    justify-content: center; /* Centrer horizontalement */
-    align-items: flex-end; /* Aligner le formulaire au bas de l'image */
+    justify-content: center; 
+    align-items: flex-end; 
 }
 
 
 .trip-type-container {
     display: flex;
-    justify-content: left; /* Centrer les boutons radio */
-    margin-bottom: 10px; /* Espace entre les boutons radio et le formulaire */
-    width: 100%; /* S'assurer que le conteneur prend toute la largeur */
+    justify-content: left; 
+    margin-bottom: 10px; 
+    width: 100%; 
 }
 
 .trip-type-container input[type="radio"] {
@@ -224,6 +224,11 @@ body {
     font-size: 1em;
 }
 
+.station {
+    color:blueviolet;
+    font-weight: bold;
+}
+
 .train-action {
     justify-content: space-between;
     align-items: center;
@@ -284,6 +289,8 @@ body {
 .class-selection input[type="radio"]:hover + label {
     color: #774d25;
 }
+
+
 
 
 .tooltip-icon {

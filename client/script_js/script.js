@@ -19,12 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Écoutez les changements dans les sélections de villes et validez
+
     departureCity.addEventListener('change', validateCities);
     arrivalCity.addEventListener('change', validateCities);
 
     searchForm.addEventListener('submit', function(event) {
-        validateCities(); // Valider à nouveau lors de la soumission du formulaire
+        validateCities(); 
 
         if (!this.checkValidity()) {
             event.preventDefault();
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         this.classList.add('was-validated');
     }, false);
 
-    validateCities(); // Valider initialement lors du chargement de la page
+    validateCities();
 
 
     const returnFields = document.getElementById('returnFields');
@@ -41,9 +41,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const oneWayRadio = document.getElementById('oneWay');
     const roundTripRadio = document.getElementById('roundTrip');
 
-    // Fonction pour gérer l'affichage du champ de retour
+  
     function toggleReturnFields() {
-        // Affichez le champ retour si "Aller-retour" est sélectionné
+
         if (roundTripRadio.checked) {
             returnFields.style.display = 'flex';
             returnInput.disabled = false;
@@ -55,11 +55,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Écoutez l'événement de changement pour chaque bouton radio
+ 
     oneWayRadio.addEventListener('change', toggleReturnFields);
     roundTripRadio.addEventListener('change', toggleReturnFields);
     
-    // Initialisation de l'affichage au chargement de la page
+
     toggleReturnFields();
 
 

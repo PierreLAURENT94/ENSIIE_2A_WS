@@ -19,14 +19,13 @@
     </header>
     <?php
 session_start();
-// login.php
+
 require_once '../client.php';
 
 $message = "";
 
-var_dump($_POST);
 
-// Traiter les informations de réservation
+
 if (isset($_POST['outboundTrainId']) && !isset($_POST['returnTrainId']) ) {
     $_SESSION['reservation'] = [
         'outboundTrainId' => $_POST['outboundTrainId'] ?? null,
@@ -53,13 +52,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user->password = $_POST['password'] ?? null;
 
     if (isset($_POST['login'])) {
-        // Tentative de connexion
+      
         if ($client->testUser($user)) {
-            // L'utilisateur est valide
+   
             $_SESSION['user'] = $user;
             $message = "Connexion réussie.";
 
-                       // Récupérer les données de réservation de la session
+                
                        if (isset($_SESSION['reservation'])) {
                         $reservationData = $_SESSION['reservation'];
                         $reservation = new Reservation();
@@ -71,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $reservation->travelClass = $reservationData['travelClass'];
                         $reservation->flexible = $reservationData['flexible'];
         
-                        // Effectuer la réservation
+                 
                         if ($client->makeReservation($reservation)) {
                             header('Location: Rechercher_un_train.php?success=true');
                             exit;
@@ -79,27 +78,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             $message = "Échec de la réservation.";
                         }
                     } else {
-                        // Aucune donnée de réservation dans la session
+                  
                         $message = "Aucune donnée de réservation trouvée.";
                     }
 
         } else {
-            // Échec de la connexion
+        
             $message = "Identifiants invalides.";
         }
     } elseif (isset($_POST['register'])) {
         try {
-            // Tentative de création de compte
+  
             $result = $client->addUser($user);
             if ($result) {
-                // Création réussie
+         
                 $message = "Compte créé avec succès.";
             } else {
-                // Échec de la création
+  
                 $message = "Erreur lors de la création du compte.";
             }
         } catch (SoapFault $fault) {
-            // Gestion de l'erreur SoapFault
+       
             $message = "Adresse mail déjà existante.";
         }
     }
